@@ -31,8 +31,8 @@ def get_dataloaders():
     transform_validation = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     transform_test = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
 
-    traindir = '/data/images/'
-    testdir = '/data/images/'
+    traindir = '/home/yoon/jyk416/OneClassDenseNet/data'
+    testdir = '/home/yoon/jyk416/OneClassDenseNet/data'
 
     trainset = torchvision.datasets.ImageFolder(root=traindir, transform=transform_train)
     validset = torchvision.datasets.ImageFolder(root=traindir, transform=transform_validation)
