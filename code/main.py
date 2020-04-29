@@ -38,16 +38,22 @@ def get_dataloaders():
     validset = torchvision.datasets.ImageFolder(root=traindir, transform=transform_validation)
     testset = torchvision.datasets.ImageFolder(root=testdir, transform=transform_test)
 
-    test_targets = []
-    train_targets = []
-    for target in trainset.targets:
-        if target == 0:
-            test_targets.append(target)
+    # test_targets = []
+    # train_targets = []
+    # for target in trainset.targets:
+    #     if target == 0:
+    #         test_targets.append(target)
+    #     else:
+    #         train_targets.append(target)
+    #
+    # print(test_targets, len(test_targets))
+    # print(train_targets, len(train_targets))
+    for i in range(len(trainset.targets)):
+        if trainset.targets[i] == 0:
+            trainset.targets[i] = 1
         else:
-            train_targets.append(target)
-
-    print(test_targets, len(test_targets))
-    print(train_targets, len(train_targets))
+            trainset.targets[i] = 0
+    print(trainset.targets)
 
     num_train = len(trainset)
     indices = get_same_indices(trainset.targets, train_label_classes)
