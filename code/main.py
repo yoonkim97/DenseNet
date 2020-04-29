@@ -11,7 +11,7 @@ from torch import optim
 train_label_classes = [0]
 test_label_classes = [1]
 
-batch_size = 64
+batch_size = 4
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
@@ -80,9 +80,7 @@ def train():
 
     start_ts = time.time()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
     model = DenseNetBC_100_12().to(device)
-
     losses = []
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=initial_lr, momentum=0.9)
@@ -93,20 +91,18 @@ def train():
     for epoch in range(num_epoch):
         lr_scheduler.step()
         total_loss = 0.0
-
         for i, data in enumerate(train_loader, 0):
             inputs, labels = data
             inputs, labels = inputs.to(device), labels.to(device)
-
+        
             model.zero_grad()
             outputs = model(inputs)
             loss = loss_function(outputs, labels)
-
+            
             loss.backward()
             optimizer.step()
             current_loss = loss.item()
             total_loss += current_loss
-
             show_period = 100
             print('[%d, %d/50000] loss: %.7f' % (epoch + 1, (i + 1) * batch_size, total_loss / show_period))
             total_loss = 0.0
