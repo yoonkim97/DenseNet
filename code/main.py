@@ -75,7 +75,7 @@ def get_dataloaders():
 def DenseNetBC_100_12():
     return DenseNet3(depth=100, num_classes=1, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
-def main():
+def train():
     train_loader, valid_loader, test_loader = get_dataloaders()
 
     start_ts = time.time()
@@ -128,7 +128,10 @@ def main():
         print('[%d epoch] Accuracy of the network on the validation images: %d %%' %
               (epoch + 1, 100 * correct / total))
 
-print('Finished Training')
+    print('Finished Training')
+
+def main():
+    train()
 
 if __name__ == '__main__':
     main()
