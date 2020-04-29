@@ -4,7 +4,7 @@ import torchvision
 from torch.utils.data.sampler import SubsetRandomSampler
 from torchvision.transforms import transforms
 import numpy as np
-from code.densenet import DenseNet3
+from densenet import DenseNet3
 import torch.nn as nn
 from torch import optim
 
@@ -38,7 +38,16 @@ def get_dataloaders():
     validset = torchvision.datasets.ImageFolder(root=traindir, transform=transform_validation)
     testset = torchvision.datasets.ImageFolder(root=testdir, transform=transform_test)
 
-    print(trainset.targets)
+    test_targets = []
+    train_targets = []
+    for target in trainset.targets:
+        if target == 0:
+            test_targets.append(target)
+        else:
+            train_targets.append(target)
+
+    print(test_targets, len(test_targets))
+    print(train_targets, len(train_targets))
 
     num_train = len(trainset)
     indices = get_same_indices(trainset.targets, train_label_classes)
