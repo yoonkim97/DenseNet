@@ -79,6 +79,7 @@ def train():
     train_loader, valid_loader, test_loader = get_dataloaders()
 
     start_ts = time.time()
+    print(torch.cuda.is_available())
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = DenseNetBC_100_12().to(device)
     losses = []
@@ -94,7 +95,8 @@ def train():
         for i, data in enumerate(train_loader, 0):
             inputs, labels = data
             inputs, labels = inputs.to(device), labels.to(device)
-        
+            for i in range(len(labels)):
+                labels[i] = 0
             model.zero_grad()
             outputs = model(inputs)
             loss = loss_function(outputs, labels)
@@ -115,6 +117,8 @@ def train():
     for i, data in enumerate(valid_loader, 0):
         inputs, labels = data
         inputs, labels = inputs.to(device), labels.to(device)
+        for i in range(len(labels)):
+            labels[i] = 0
         outputs = model(inputs)
 
         _, predicted = torch.max(outputs.data, 1)
