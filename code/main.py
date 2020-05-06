@@ -1,4 +1,5 @@
 import time
+import os
 import torch
 import torchvision
 from torch.utils.data.sampler import SubsetRandomSampler
@@ -11,7 +12,7 @@ from torch import optim
 female_label_class = [0]
 male_label_class = [1]
 
-batch_size = 64
+batch_size = 4
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
@@ -89,7 +90,7 @@ def get_dataloaders():
 
 
 def DenseNetBC_100_12():
-    return DenseNet3(depth=100, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
+    return DenseNet3(depth=80, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
 
 def train():
@@ -97,7 +98,10 @@ def train():
 
     start_ts = time.time()
     print(torch.cuda.is_available())
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    print(torch.cuda.device_count())
+    print(torch.cuda.current_device())
+    print(os.getpid())
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = DenseNetBC_100_12().to(device)
     losses = []
     loss_function = nn.CrossEntropyLoss()
