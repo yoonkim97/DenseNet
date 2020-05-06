@@ -33,7 +33,7 @@ def get_dataloaders():
     # transform_validation = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     # transform_test = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
 
-    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data'
+    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data/train'
     # traindir = '/home/yoon/jyk416/OneClassDenseNet/data'
     # testdir = '/home/yoon/jyk416/OneClassDenseNet/data'
 
@@ -41,7 +41,7 @@ def get_dataloaders():
     # trainset = torchvision.datasets.ImageFolder(root=traindir, transform=transform_train)
     # validset = torchvision.datasets.ImageFolder(root=traindir, transform=transform_validation)
     # testset = torchvision.datasets.ImageFolder(root=testdir, transform=transform_test)
-
+    print("length of dataset", len(dataset))
     female_count = 0
     male_count = 0
     for i in range(len(dataset.targets)):
