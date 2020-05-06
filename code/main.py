@@ -11,7 +11,7 @@ from torch import optim
 female_label_class = [0]
 male_label_class = [1]
 
-batch_size = 4
+batch_size = 64
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
