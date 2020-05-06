@@ -8,8 +8,8 @@ from densenet import DenseNet3
 import torch.nn as nn
 from torch import optim
 
-train_label_classes = [0]
-test_label_classes = [1]
+female_label_class = [0]
+male_label_class = [1]
 
 batch_size = 4
 validation_ratio = 0.1
@@ -17,16 +17,17 @@ random_seed = 10
 initial_lr = 0.1
 num_epoch = 50
 
+
 def get_same_indices(target, labels):
-  label_indices = []
-  for i in range (len(target)):
-    for j in range (len(labels)):
-      if target[i] == labels[j]:
-        label_indices.append(i)
-  return label_indices
+    label_indices = []
+    for i in range(len(target)):
+        for j in range(len(labels)):
+            if target[i] == labels[j]:
+                label_indices.append(i)
+    return label_indices
+
 
 def get_dataloaders():
-
     transform = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     # transform_train = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     # transform_validation = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
@@ -41,21 +42,38 @@ def get_dataloaders():
     # validset = torchvision.datasets.ImageFolder(root=traindir, transform=transform_validation)
     # testset = torchvision.datasets.ImageFolder(root=testdir, transform=transform_test)
 
+    female_count = 0
+    male_count = 0
     for i in range(len(dataset.targets)):
         if dataset.targets[i] == 0:
-            dataset.targets[i] = 1
+            female_count += 1
         else:
-            dataset.targets[i] = 0
+            male_count += 1
+
+    num_female_train = female_count
+    num_male_train = male_count
+    female_indices = get_same_indices(dataset.targets, female_label_class)
+    male_indices = get_same_indices(dataset.targets, male_label_class)
+    split_female = int(np.floor(validation_ratio * num_female_train))
+    split_male = int(np.floor(validation_ratio * num_male_train))
+
+    print("female:", female_indices)
+    print("male:", male_indices)
+    print("female len", len(female_indices))
+    print("female_train_idx", female_indices[split_female:])
+    print("split values", split_female, split_male)
 
     num_train = len(dataset)
-    indices = get_same_indices(dataset.targets, train_label_classes)
+    indices = get_same_indices(dataset.targets, female_label_class)
     split = int(np.floor(validation_ratio * num_train))
+
+    female_train_idx, female_valid_idx = female_indices[split_female:], female_indices[:split_female]
 
     train_idx, valid_idx = indices[split:], indices[:split]
     train_sampler = SubsetRandomSampler(train_idx)
     valid_sampler = SubsetRandomSampler(valid_idx)
 
-    test_indices = get_same_indices(dataset.targets, test_label_classes)
+    test_indices = get_same_indices(dataset.targets, male_label_class)
     test_sampler = SubsetRandomSampler(test_indices)
 
     train_loader = torch.utils.data.DataLoader(
@@ -72,8 +90,10 @@ def get_dataloaders():
 
     return train_loader, valid_loader, test_loader
 
+
 def DenseNetBC_100_12():
     return DenseNet3(depth=100, num_classes=1, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
+
 
 def train():
     train_loader, valid_loader, test_loader = get_dataloaders()
@@ -100,7 +120,7 @@ def train():
             model.zero_grad()
             outputs = model(inputs)
             loss = loss_function(outputs, labels)
-            
+
             loss.backward()
             optimizer.step()
             current_loss = loss.item()
@@ -130,8 +150,10 @@ def train():
 
     print('Finished Training')
 
+
 def main():
     train()
+
 
 if __name__ == '__main__':
     main()
