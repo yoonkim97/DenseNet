@@ -70,9 +70,9 @@ class DenseNet3(nn.Module):
                  reduction=0.5, bottleneck=True, dropRate=0.0):
         super(DenseNet3, self).__init__()
         in_planes = 2 * growth_rate
-        n = (depth - 4) // 3
+        n = (depth - 4) / 3
         if bottleneck == True:
-            n = n // 2
+            n = n/2
             block = BottleneckBlock
         else:
             block = BasicBlock
@@ -95,7 +95,7 @@ class DenseNet3(nn.Module):
         # global average pooling and classifier
         self.bn1 = nn.BatchNorm2d(in_planes)
         self.relu = nn.ReLU(inplace=True)
-        self.fc = nn.Linear(in_planes * 16 * 16, num_classes)
+        self.fc = nn.Linear(in_planes, num_classes)
         self.in_planes = in_planes
 
         for m in self.modules():
@@ -114,5 +114,5 @@ class DenseNet3(nn.Module):
         out = self.block3(out)
         out = self.relu(self.bn1(out))
         out = F.avg_pool2d(out, 8)
-        out = out.view(-1, 342 * 16 * 16)
+        out = out.view(-1, self.in_planes)
         return self.fc(out)
