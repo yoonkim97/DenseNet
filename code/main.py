@@ -57,19 +57,15 @@ def get_dataloaders():
     split_female = int(np.floor(validation_ratio * num_female_train))
     split_male = int(np.floor(validation_ratio * num_male_train))
 
-    print("female:", female_indices)
-    print("male:", male_indices)
-    print("female len", len(female_indices))
-    print("male len", len(male_indices))
-    print("female_train_idx", female_indices[split_female:])
-    print("sum", len(female_indices[split_female:]) + len(female_indices[:split_female]))
-    print("split values", split_female, split_male)
-
     num_train = len(dataset)
     indices = get_same_indices(dataset.targets, female_label_class)
     split = int(np.floor(validation_ratio * num_train))
 
     female_train_idx, female_valid_idx = female_indices[split_female:], female_indices[:split_female]
+    male_train_idx, male_valid_idx = male_indices[split_male:], male_indices[split_male:]
+    print("sum: ", len(male_train_idx) + len(male_valid_idx))
+    female_train = female_train_idx + male_train_idx
+    print("female training", female_train, len(female_train))
 
     train_idx, valid_idx = indices[split:], indices[:split]
     train_sampler = SubsetRandomSampler(train_idx)
