@@ -61,6 +61,7 @@ def get_dataloaders():
     print("male:", male_indices)
     print("female len", len(female_indices))
     print("female_train_idx", female_indices[split_female:])
+    print("sum", len(female_indices[split_female:]) + len(female_indices[:split_female]))
     print("split values", split_female, split_male)
 
     num_train = len(dataset)
