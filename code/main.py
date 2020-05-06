@@ -116,8 +116,6 @@ def train():
         for i, data in enumerate(train_loader, 0):
             inputs, labels = data
             inputs, labels = inputs.to(device), labels.to(device)
-            for i in range(len(labels)):
-                labels[i] = 0
             model.zero_grad()
             outputs = model(inputs)
             loss = loss_function(outputs, labels)
@@ -138,8 +136,6 @@ def train():
     for i, data in enumerate(valid_loader, 0):
         inputs, labels = data
         inputs, labels = inputs.to(device), labels.to(device)
-        for i in range(len(labels)):
-            labels[i] = 0
         outputs = model(inputs)
 
         _, predicted = torch.max(outputs.data, 1)
