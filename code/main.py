@@ -63,10 +63,9 @@ def get_dataloaders():
 
     female_train_idx, female_valid_idx = female_indices[split_female:], female_indices[:split_female]
     male_train_idx, male_valid_idx = male_indices[split_male:], male_indices[:split_male]
-    print("sum: ", len(male_train_idx) + len(male_valid_idx))
-    female_train = female_train_idx + male_train_idx
-    print("female training", female_train, len(female_train))
-
+    train_set = female_train_idx + male_train_idx
+    valid_set = female_valid_idx + male_valid_idx
+    print("sum of things", len(train_set) + len(valid_set))
     train_idx, valid_idx = indices[split:], indices[:split]
     train_sampler = SubsetRandomSampler(train_idx)
     valid_sampler = SubsetRandomSampler(valid_idx)
