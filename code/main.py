@@ -52,6 +52,12 @@ def get_dataloaders():
 
     num_female_train = female_count
     num_male_train = male_count
+    print("female count", female_count)
+    array = []
+    for i in range(len(dataset.targets)):
+        if dataset.targets[i] == 0:
+            array.append(i)
+    print("array", array)
     female_indices = get_same_indices(dataset.targets, female_label_class)
     male_indices = get_same_indices(dataset.targets, male_label_class)
     split_female = int(np.floor(validation_ratio * num_female_train))
