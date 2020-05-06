@@ -41,7 +41,7 @@ def get_dataloaders():
     # trainset = torchvision.datasets.ImageFolder(root=traindir, transform=transform_train)
     # validset = torchvision.datasets.ImageFolder(root=traindir, transform=transform_validation)
     # testset = torchvision.datasets.ImageFolder(root=testdir, transform=transform_test)
-    print("length of dataset", len(dataset))
+
     female_count = 0
     male_count = 0
     for i in range(len(dataset.targets)):
@@ -52,14 +52,6 @@ def get_dataloaders():
 
     num_female_train = female_count
     num_male_train = male_count
-    print("total data", len(dataset.targets))
-    print("female count", female_count)
-    print("male count", male_count)
-    array = []
-    for i in range(len(dataset.targets)):
-        if dataset.targets[i] == 0:
-            array.append(i)
-    print("array", array)
     female_indices = get_same_indices(dataset.targets, female_label_class)
     male_indices = get_same_indices(dataset.targets, male_label_class)
     split_female = int(np.floor(validation_ratio * num_female_train))
@@ -68,6 +60,7 @@ def get_dataloaders():
     print("female:", female_indices)
     print("male:", male_indices)
     print("female len", len(female_indices))
+    print("male len", len(male_indices))
     print("female_train_idx", female_indices[split_female:])
     print("sum", len(female_indices[split_female:]) + len(female_indices[:split_female]))
     print("split values", split_female, split_male)
