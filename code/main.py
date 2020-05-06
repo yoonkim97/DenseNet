@@ -12,7 +12,7 @@ from torch import optim
 female_label_class = [0]
 male_label_class = [1]
 
-batch_size = 4
+batch_size = 8
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
@@ -90,7 +90,7 @@ def get_dataloaders():
 
 
 def DenseNetBC_100_12():
-    return DenseNet3(depth=80, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
+    return DenseNet3(depth=50, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
 
 def train():
