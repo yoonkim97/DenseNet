@@ -52,7 +52,9 @@ def get_dataloaders():
 
     num_female_train = female_count
     num_male_train = male_count
+    print("total data", len(dataset.targets))
     print("female count", female_count)
+    print("male count", male_count)
     array = []
     for i in range(len(dataset.targets)):
         if dataset.targets[i] == 0:
