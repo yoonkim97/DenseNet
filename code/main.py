@@ -89,7 +89,7 @@ def get_dataloaders():
     return train_loader, valid_loader
 
 
-def DenseNetBC_100_12():
+def DenseNetBC_50_12():
     return DenseNet3(depth=50, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
 
@@ -97,12 +97,8 @@ def train():
     train_loader, valid_loader = get_dataloaders()
 
     start_ts = time.time()
-    print(torch.cuda.is_available())
-    print(torch.cuda.device_count())
-    print(torch.cuda.current_device())
-    print(os.getpid())
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = DenseNetBC_100_12().to(device)
+    model = DenseNetBC_50_12().to(device)
     losses = []
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=initial_lr, momentum=0.9)
