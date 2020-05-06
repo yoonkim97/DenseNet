@@ -15,7 +15,7 @@ batch_size = 4
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
-num_epoch = 50
+num_epoch = 300
 
 
 def get_same_indices(target, labels):
@@ -33,7 +33,7 @@ def get_dataloaders():
     # transform_validation = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     # transform_test = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
 
-    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data'
+    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data/train'
     # traindir = '/home/yoon/jyk416/OneClassDenseNet/data'
     # testdir = '/home/yoon/jyk416/OneClassDenseNet/data'
 
@@ -57,24 +57,21 @@ def get_dataloaders():
     split_female = int(np.floor(validation_ratio * num_female_train))
     split_male = int(np.floor(validation_ratio * num_male_train))
 
-    print("female:", female_indices)
-    print("male:", male_indices)
-    print("female len", len(female_indices))
-    print("female_train_idx", female_indices[split_female:])
-    print("split values", split_female, split_male)
-
-    num_train = len(dataset)
-    indices = get_same_indices(dataset.targets, female_label_class)
-    split = int(np.floor(validation_ratio * num_train))
+    # num_train = len(dataset)
+    # indices = get_same_indices(dataset.targets, female_label_class)
+    # split = int(np.floor(validation_ratio * num_train))
 
     female_train_idx, female_valid_idx = female_indices[split_female:], female_indices[:split_female]
+    male_train_idx, male_valid_idx = male_indices[split_male:], male_indices[:split_male]
+    train_set = female_train_idx + male_train_idx
+    valid_set = female_valid_idx + male_valid_idx
 
-    train_idx, valid_idx = indices[split:], indices[:split]
-    train_sampler = SubsetRandomSampler(train_idx)
-    valid_sampler = SubsetRandomSampler(valid_idx)
+    # train_idx, valid_idx = indices[split:], indices[:split]
+    train_sampler = SubsetRandomSampler(train_set)
+    valid_sampler = SubsetRandomSampler(valid_set)
 
-    test_indices = get_same_indices(dataset.targets, male_label_class)
-    test_sampler = SubsetRandomSampler(test_indices)
+    # test_indices = get_same_indices(dataset.targets, male_label_class)
+    # test_sampler = SubsetRandomSampler(test_indices)
 
     train_loader = torch.utils.data.DataLoader(
         dataset, batch_size=batch_size, sampler=train_sampler, num_workers=0
@@ -84,19 +81,19 @@ def get_dataloaders():
         dataset, batch_size=batch_size, sampler=valid_sampler, num_workers=0
     )
 
-    test_loader = torch.utils.data.DataLoader(
-        dataset, batch_size=batch_size, sampler=test_sampler, shuffle=False, num_workers=0
-    )
+    # test_loader = torch.utils.data.DataLoader(
+    #     dataset, batch_size=batch_size, sampler=test_sampler, shuffle=False, num_workers=0
+    # )
 
-    return train_loader, valid_loader, test_loader
+    return train_loader, valid_loader
 
 
 def DenseNetBC_100_12():
-    return DenseNet3(depth=100, num_classes=1, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
+    return DenseNet3(depth=100, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
 
 def train():
-    train_loader, valid_loader, test_loader = get_dataloaders()
+    train_loader, valid_loader = get_dataloaders()
 
     start_ts = time.time()
     print(torch.cuda.is_available())
@@ -126,7 +123,7 @@ def train():
             current_loss = loss.item()
             total_loss += current_loss
             show_period = 100
-            print('[%d, %d/50000] loss: %.7f' % (epoch + 1, (i + 1) * batch_size, total_loss / show_period))
+            print('[%d, %d/50500] loss: %.7f' % (epoch + 1, (i + 1) * batch_size, total_loss / show_period))
             total_loss = 0.0
     torch.cuda.empty_cache()
 
