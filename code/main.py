@@ -62,7 +62,7 @@ def get_dataloaders():
     split = int(np.floor(validation_ratio * num_train))
 
     female_train_idx, female_valid_idx = female_indices[split_female:], female_indices[:split_female]
-    male_train_idx, male_valid_idx = male_indices[split_male:], male_indices[split_male:]
+    male_train_idx, male_valid_idx = male_indices[split_male:], male_indices[:split_male]
     print("sum: ", len(male_train_idx) + len(male_valid_idx))
     female_train = female_train_idx + male_train_idx
     print("female training", female_train, len(female_train))
