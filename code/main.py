@@ -134,6 +134,7 @@ def train():
     for epoch in range(num_epoch):
         lr_scheduler.step()
         total_loss = 0.0
+        model.train()
         for i, data in enumerate(train_loader, 0):
             inputs, labels = data
             inputs, labels = inputs.to(device), labels.to(device)
@@ -146,7 +147,7 @@ def train():
             total_loss += loss.item()
 
             show_period = 100
-            print('[%d, %d/50500] loss: %.7f' % (epoch + 1, (i + 1) * batch_size, total_loss / show_period))
+            print('[%d, %d/50500] loss: %.7f' % (start_epoch + epoch + 1, (i + 1) * batch_size, total_loss / show_period))
             total_loss = 0.0
         torch.cuda.empty_cache()
 
@@ -154,6 +155,7 @@ def train():
         correct = 0
         total = 0
         with torch.no_grad():
+            model.eval()
             for i, data in enumerate(valid_loader, 0):
                 inputs, labels = data
                 inputs, labels = inputs.to(device), labels.to(device)
