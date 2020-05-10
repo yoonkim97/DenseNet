@@ -18,7 +18,6 @@ random_seed = 10
 initial_lr = 0.1
 num_epoch = 300
 
-
 def get_same_indices(target, labels):
     label_indices = []
     for i in range(len(target)):
@@ -92,6 +91,13 @@ def get_dataloaders():
 def DenseNetBC_50_12():
     return DenseNet3(depth=50, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
+def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet/output/checkpoint.pth.tar'):
+    """Save checkpoint if a new best is achieved"""
+    if is_best:
+        print("=> Saving a new best")
+        torch.save(state, filename)  # save checkpoint
+    else:
+        print("=> Validation Accuracy did not improve")
 
 def train():
     train_loader, valid_loader = get_dataloaders()
@@ -106,6 +112,10 @@ def train():
     lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
                                                   milestones=[int(num_epoch * 0.5), int(num_epoch * 0.75)], gamma=0.1,
                                                   last_epoch=-1)
+    best_accuracy = 0
+    resume_weights = "/home/yoon/jyk416/OneClassDenseNet/output/checkpoint.pth.tar"
+    start_epoch = 0
+
     # training loop + validation loop
     for epoch in range(num_epoch):
         lr_scheduler.step()
@@ -124,24 +134,46 @@ def train():
             show_period = 100
             print('[%d, %d/50500] loss: %.7f' % (epoch + 1, (i + 1) * batch_size, total_loss / show_period))
             total_loss = 0.0
-    torch.cuda.empty_cache()
+        torch.cuda.empty_cache()
 
-    # validation part
-    correct = 0
-    total = 0
+        # validation part
+        correct = 0
+        total = 0
 
-    for i, data in enumerate(valid_loader, 0):
-        inputs, labels = data
-        inputs, labels = inputs.to(device), labels.to(device)
-        outputs = model(inputs)
+        for i, data in enumerate(valid_loader, 0):
+            inputs, labels = data
+            inputs, labels = inputs.to(device), labels.to(device)
+            outputs = model(inputs)
 
-        _, predicted = torch.max(outputs.data, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
 
-        print('[%d epoch] Accuracy of the network on the validation images: %d %%' %
-              (epoch + 1, 100 * correct / total))
+            accuracy = 100 * correct / total
+            print('[%d epoch] Accuracy of the network on the validation images: %d %%' %
+                  (epoch + 1, accuracy))
 
+            is_best = bool(accuracy > best_accuracy)
+            best_accuracy = max(accuracy, best_accuracy)
+
+            save_checkpoint({
+                'epoch': start_epoch + epoch + 1,
+                'state_dict': model.state_dict(),
+                'best_accuracy': best_accuracy
+            }, is_best)
+
+            # cuda = torch.cuda.is_available()
+            if torch.cuda.is_available():
+                checkpoint = torch.load(resume_weights)
+            else:
+                # Load GPU model on CPU
+                checkpoint = torch.load(resume_weights,
+                                        map_location=lambda storage,
+                                                            loc: storage)
+            start_epoch = checkpoint['epoch']
+            best_accuracy = checkpoint['best_accuracy']
+            model.load_state_dict(checkpoint['state_dict'])
+            print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
     print('Finished Training')
 
 
