@@ -144,11 +144,12 @@ def train():
 
             loss.backward()
             optimizer.step()
-            current_loss = loss.item()
-            total_loss += current_loss
+            total_loss += loss.item()
+            del data
             show_period = 100
             print('[%d, %d/50500] loss: %.7f' % (epoch + 1, (i + 1) * batch_size, total_loss / show_period))
             total_loss = 0.0
+
         torch.cuda.empty_cache()
 
         # validation part
