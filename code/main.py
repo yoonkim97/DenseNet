@@ -167,7 +167,7 @@ def train():
 
                 accuracy = 100 * correct / total
                 print('[%d epoch] Accuracy of the network on the validation images: %d %%' %
-                      (epoch + 1, accuracy))
+                      (start_epoch + epoch + 1, accuracy))
 
                 is_best = bool(accuracy > best_accuracy)
                 best_accuracy = max(accuracy, best_accuracy)
