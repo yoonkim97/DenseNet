@@ -100,6 +100,7 @@ def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet
         print("=> Validation Accuracy did not improve")
 
 def train():
+    directory = '/home/yoon/jyk416/OneClassDenseNet/output/'
     train_loader, valid_loader = get_dataloaders()
 
     start_ts = time.time()
@@ -113,6 +114,7 @@ def train():
                                                   milestones=[int(num_epoch * 0.5), int(num_epoch * 0.75)], gamma=0.1,
                                                   last_epoch=-1)
     best_accuracy = 0
+
     resume_weights = "/home/yoon/jyk416/OneClassDenseNet/output/checkpoint.pth.tar"
     start_epoch = 0
 
@@ -155,6 +157,9 @@ def train():
 
             is_best = bool(accuracy > best_accuracy)
             best_accuracy = max(accuracy, best_accuracy)
+
+            if not os.path.exists(directory):
+                os.makedirs(directory)
 
             save_checkpoint({
                 'epoch': start_epoch + epoch + 1,
