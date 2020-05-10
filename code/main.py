@@ -118,6 +118,19 @@ def train():
     resume_weights = "/home/yoon/jyk416/OneClassDenseNet/output/checkpoint.pth.tar"
     start_epoch = 0
 
+    # cuda = torch.cuda.is_available()
+    if torch.cuda.is_available():
+        checkpoint = torch.load(resume_weights)
+    else:
+        # Load GPU model on CPU
+        checkpoint = torch.load(resume_weights,
+                                map_location=lambda storage,
+                                                    loc: storage)
+    start_epoch = checkpoint['epoch']
+    best_accuracy = checkpoint['best_accuracy']
+    model.load_state_dict(checkpoint['state_dict'])
+    print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
+
     # training loop + validation loop
     for epoch in range(num_epoch):
         lr_scheduler.step()
@@ -141,44 +154,31 @@ def train():
         # validation part
         correct = 0
         total = 0
+        with torch.no_grad():
+            for i, data in enumerate(valid_loader, 0):
+                inputs, labels = data
+                inputs, labels = inputs.to(device), labels.to(device)
+                outputs = model(inputs)
 
-        for i, data in enumerate(valid_loader, 0):
-            inputs, labels = data
-            inputs, labels = inputs.to(device), labels.to(device)
-            outputs = model(inputs)
+                _, predicted = torch.max(outputs.data, 1)
+                total += labels.size(0)
+                correct += (predicted == labels).sum().item()
 
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
+                accuracy = 100 * correct / total
+                print('[%d epoch] Accuracy of the network on the validation images: %d %%' %
+                      (epoch + 1, accuracy))
 
-            accuracy = 100 * correct / total
-            print('[%d epoch] Accuracy of the network on the validation images: %d %%' %
-                  (epoch + 1, accuracy))
+                is_best = bool(accuracy > best_accuracy)
+                best_accuracy = max(accuracy, best_accuracy)
 
-            is_best = bool(accuracy > best_accuracy)
-            best_accuracy = max(accuracy, best_accuracy)
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
 
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-
-            save_checkpoint({
-                'epoch': start_epoch + epoch + 1,
-                'state_dict': model.state_dict(),
-                'best_accuracy': best_accuracy
-            }, is_best)
-
-            # cuda = torch.cuda.is_available()
-            if torch.cuda.is_available():
-                checkpoint = torch.load(resume_weights)
-            else:
-                # Load GPU model on CPU
-                checkpoint = torch.load(resume_weights,
-                                        map_location=lambda storage,
-                                                            loc: storage)
-            start_epoch = checkpoint['epoch']
-            best_accuracy = checkpoint['best_accuracy']
-            model.load_state_dict(checkpoint['state_dict'])
-            print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
+                save_checkpoint({
+                    'epoch': start_epoch + epoch + 1,
+                    'state_dict': model.state_dict(),
+                    'best_accuracy': best_accuracy
+                }, is_best)
     print('Finished Training')
 
 
