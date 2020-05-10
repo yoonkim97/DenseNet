@@ -97,6 +97,7 @@ def train():
     train_loader, valid_loader = get_dataloaders()
 
     start_ts = time.time()
+    print(torch.cuda.is_available())
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = DenseNetBC_50_12().to(device)
     losses = []
