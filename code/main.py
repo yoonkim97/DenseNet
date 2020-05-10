@@ -16,7 +16,7 @@ batch_size = 8
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
-num_epoch = 300
+num_epoch = 150
 
 def get_same_indices(target, labels):
     label_indices = []
