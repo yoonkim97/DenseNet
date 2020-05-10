@@ -107,14 +107,13 @@ def train():
     print(torch.cuda.is_available())
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = DenseNetBC_50_12().to(device)
-    losses = []
+
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=initial_lr, momentum=0.9)
     lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
                                                   milestones=[int(num_epoch * 0.5), int(num_epoch * 0.75)], gamma=0.1,
                                                   last_epoch=-1)
     best_accuracy = 0
-
     resume_weights = "/home/yoon/jyk416/OneClassDenseNet/output/checkpoint.pth.tar"
     start_epoch = 0
 
@@ -138,18 +137,17 @@ def train():
         for i, data in enumerate(train_loader, 0):
             inputs, labels = data
             inputs, labels = inputs.to(device), labels.to(device)
-            model.zero_grad()
+            optimizer.zero_grad()
             outputs = model(inputs)
             loss = loss_function(outputs, labels)
 
             loss.backward()
             optimizer.step()
             total_loss += loss.item()
-            del data
+
             show_period = 100
             print('[%d, %d/50500] loss: %.7f' % (epoch + 1, (i + 1) * batch_size, total_loss / show_period))
             total_loss = 0.0
-
         torch.cuda.empty_cache()
 
         # validation part
@@ -180,6 +178,7 @@ def train():
                     'state_dict': model.state_dict(),
                     'best_accuracy': best_accuracy
                 }, is_best)
+    torch.cuda.empty_cache()
     print('Finished Training')
 
 
