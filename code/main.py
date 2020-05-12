@@ -9,8 +9,11 @@ from densenet import DenseNet3
 import torch.nn as nn
 from torch import optim
 
-female_label_class = [0]
-male_label_class = [1]
+# female_label_class = [0]
+# male_label_class = [1]
+
+ap_label_class = [0]
+pa_label_class = [1]
 
 batch_size = 8
 validation_ratio = 0.1
@@ -33,7 +36,7 @@ def get_dataloaders():
     # transform_validation = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     # transform_test = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
 
-    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data/train'
+    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data/train2'
     # traindir = '/home/yoon/jyk416/OneClassDenseNet/data'
     # testdir = '/home/yoon/jyk416/OneClassDenseNet/data'
 
@@ -42,29 +45,49 @@ def get_dataloaders():
     # validset = torchvision.datasets.ImageFolder(root=traindir, transform=transform_validation)
     # testset = torchvision.datasets.ImageFolder(root=testdir, transform=transform_test)
 
-    female_count = 0
-    male_count = 0
+    # female_count = 0
+    # male_count = 0
+    # for i in range(len(dataset.targets)):
+    #     if dataset.targets[i] == 0:
+    #         female_count += 1
+    #     else:
+    #         male_count += 1
+    #
+    # num_female_train = female_count
+    # num_male_train = male_count
+    # female_indices = get_same_indices(dataset.targets, female_label_class)
+    # male_indices = get_same_indices(dataset.targets, male_label_class)
+    # split_female = int(np.floor(validation_ratio * num_female_train))
+    # split_male = int(np.floor(validation_ratio * num_male_train))
+
+    ap_count = 0
+    pa_count = 0
     for i in range(len(dataset.targets)):
         if dataset.targets[i] == 0:
-            female_count += 1
+            ap_count += 1
         else:
-            male_count += 1
+            pa_count += 1
 
-    num_female_train = female_count
-    num_male_train = male_count
-    female_indices = get_same_indices(dataset.targets, female_label_class)
-    male_indices = get_same_indices(dataset.targets, male_label_class)
-    split_female = int(np.floor(validation_ratio * num_female_train))
-    split_male = int(np.floor(validation_ratio * num_male_train))
+    num_ap_train = ap_count
+    num_pa_train = pa_count
+    ap_indices = get_same_indices(dataset.targets, ap_label_class)
+    pa_indices = get_same_indices(dataset.targets, pa_label_class)
+    split_ap = int(np.floor(validation_ratio * num_ap_train))
+    split_pa = int(np.floor(validation_ratio * num_pa_train))
 
     # num_train = len(dataset)
     # indices = get_same_indices(dataset.targets, female_label_class)
     # split = int(np.floor(validation_ratio * num_train))
 
-    female_train_idx, female_valid_idx = female_indices[split_female:], female_indices[:split_female]
-    male_train_idx, male_valid_idx = male_indices[split_male:], male_indices[:split_male]
-    train_set = female_train_idx + male_train_idx
-    valid_set = female_valid_idx + male_valid_idx
+    # female_train_idx, female_valid_idx = female_indices[split_female:], female_indices[:split_female]
+    # male_train_idx, male_valid_idx = male_indices[split_male:], male_indices[:split_male]
+    # train_set = female_train_idx + male_train_idx
+    # valid_set = female_valid_idx + male_valid_idx
+
+    ap_train_idx, ap_valid_idx = ap_indices[split_ap:], ap_indices[:split_ap]
+    pa_train_idx, pa_valid_idx = pa_indices[split_pa:], pa_indices[:split_pa]
+    train_set = ap_train_idx + pa_train_idx
+    valid_set = ap_valid_idx + pa_valid_idx
 
     # train_idx, valid_idx = indices[split:], indices[:split]
     train_sampler = SubsetRandomSampler(train_set)
