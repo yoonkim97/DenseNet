@@ -114,7 +114,7 @@ def get_dataloaders():
 def DenseNetBC_50_12():
     return DenseNet3(depth=50, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
-def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet/output/checkpoint.pth.tar'):
+def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet/output2/checkpoint.pth.tar'):
     """Save checkpoint if a new best is achieved"""
     if is_best:
         print("=> Saving a new best")
@@ -123,7 +123,7 @@ def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet
         print("=> Validation Accuracy did not improve")
 
 def train():
-    directory = '/home/yoon/jyk416/OneClassDenseNet/output/'
+    directory = '/home/yoon/jyk416/OneClassDenseNet/output2/'
     train_loader, valid_loader = get_dataloaders()
 
     start_ts = time.time()
@@ -137,7 +137,7 @@ def train():
                                                   milestones=[int(num_epoch * 0.5), int(num_epoch * 0.75)], gamma=0.1,
                                                   last_epoch=-1)
     best_accuracy = 0
-    resume_weights = "/home/yoon/jyk416/OneClassDenseNet/output/checkpoint.pth.tar"
+    resume_weights = "/home/yoon/jyk416/OneClassDenseNet/output2/checkpoint.pth.tar"
     start_epoch = 0
 
     # cuda = torch.cuda.is_available()
