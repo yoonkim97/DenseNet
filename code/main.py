@@ -154,58 +154,76 @@ def train():
         model.load_state_dict(checkpoint['state_dict'])
         print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
 
-    # training loop + validation loop
-    for epoch in range(num_epoch):
-        lr_scheduler.step()
-        total_loss = 0.0
-        model.train()
-        for i, data in enumerate(train_loader, 0):
+    # validation part
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        model.eval()
+        for i, data in enumerate(valid_loader, 0):
             inputs, labels = data
             inputs, labels = inputs.to(device), labels.to(device)
-            optimizer.zero_grad()
             outputs = model(inputs)
-            loss = loss_function(outputs, labels)
 
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item()
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
 
-            show_period = 100
-            print('[%d, %d/50500] loss: %.7f' % (start_epoch + epoch + 1, (i + 1) * batch_size, total_loss / show_period))
-            total_loss = 0.0
-        torch.cuda.empty_cache()
+            accuracy = 100 * correct / total
+            print(accuracy)
 
-        # validation part
-        correct = 0
-        total = 0
-        with torch.no_grad():
-            model.eval()
-            for i, data in enumerate(valid_loader, 0):
-                inputs, labels = data
-                inputs, labels = inputs.to(device), labels.to(device)
-                outputs = model(inputs)
-
-                _, predicted = torch.max(outputs.data, 1)
-                total += labels.size(0)
-                correct += (predicted == labels).sum().item()
-
-                accuracy = 100 * correct / total
-                print('[%d epoch] Accuracy of the network on the validation images: %d %%' %
-                      (start_epoch + epoch + 1, accuracy))
-
-                is_best = bool(accuracy > best_accuracy)
-                best_accuracy = max(accuracy, best_accuracy)
-
-                if not os.path.exists(directory):
-                    os.makedirs(directory)
-
-                save_checkpoint({
-                    'epoch': start_epoch + epoch + 1,
-                    'state_dict': model.state_dict(),
-                    'best_accuracy': best_accuracy
-                }, is_best)
-    torch.cuda.empty_cache()
-    print('Finished Training')
+    # # training loop + validation loop
+    # for epoch in range(num_epoch):
+    #     lr_scheduler.step()
+    #     total_loss = 0.0
+    #     model.train()
+    #     for i, data in enumerate(train_loader, 0):
+    #         inputs, labels = data
+    #         inputs, labels = inputs.to(device), labels.to(device)
+    #         optimizer.zero_grad()
+    #         outputs = model(inputs)
+    #         loss = loss_function(outputs, labels)
+    #
+    #         loss.backward()
+    #         optimizer.step()
+    #         total_loss += loss.item()
+    #
+    #         show_period = 100
+    #         print('[%d, %d/50500] loss: %.7f' % (start_epoch + epoch + 1, (i + 1) * batch_size, total_loss / show_period))
+    #         total_loss = 0.0
+    #     torch.cuda.empty_cache()
+    #
+    #     # validation part
+    #     correct = 0
+    #     total = 0
+    #     with torch.no_grad():
+    #         model.eval()
+    #         for i, data in enumerate(valid_loader, 0):
+    #             inputs, labels = data
+    #             inputs, labels = inputs.to(device), labels.to(device)
+    #             outputs = model(inputs)
+    #
+    #             _, predicted = torch.max(outputs.data, 1)
+    #             total += labels.size(0)
+    #             correct += (predicted == labels).sum().item()
+    #
+    #             accuracy = 100 * correct / total
+    #             print('[%d epoch] Accuracy of the network on the validation images: %d %%' %
+    #                   (start_epoch + epoch + 1, accuracy))
+    #
+    #             is_best = bool(accuracy > best_accuracy)
+    #             best_accuracy = max(accuracy, best_accuracy)
+    #
+    #             if not os.path.exists(directory):
+    #                 os.makedirs(directory)
+    #
+    #             save_checkpoint({
+    #                 'epoch': start_epoch + epoch + 1,
+    #                 'state_dict': model.state_dict(),
+    #                 'best_accuracy': best_accuracy
+    #             }, is_best)
+    # torch.cuda.empty_cache()
+    #
+    # print('Finished Training')
 
 
 def main():
