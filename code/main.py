@@ -154,23 +154,7 @@ def train():
         model.load_state_dict(checkpoint['state_dict'])
         print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
 
-    # validation part
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        model.eval()
-        for i, data in enumerate(valid_loader, 0):
-            inputs, labels = data
-            inputs, labels = inputs.to(device), labels.to(device)
-            outputs = model(inputs)
-
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-
-            accuracy = 100 * correct / total
-            print(accuracy)
-
+    model_filename = '/home/yoon/jyk416/OneClassDenseNet/output2/model{}.pth'
     # training loop + validation loop
     for epoch in range(num_epoch):
         lr_scheduler.step()
@@ -221,9 +205,9 @@ def train():
                     'state_dict': model.state_dict(),
                     'best_accuracy': best_accuracy
                 }, is_best)
+        if epoch % 5 == 0:
+            torch.save(model.state_dict(), model_filename.format(epoch + 1))
     torch.cuda.empty_cache()
-    model_filename = '/home/yoon/jyk416/OneClassDenseNet/output2/model.pth'
-    torch.save(model.state_dict(), model_filename)
     print('Finished Training')
 
 
