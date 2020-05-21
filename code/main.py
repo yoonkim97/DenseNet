@@ -12,14 +12,17 @@ from torch import optim
 # female_label_class = [0]
 # male_label_class = [1]
 
-ap_label_class = [0]
-pa_label_class = [1]
+# ap_label_class = [0]
+# pa_label_class = [1]
+
+healthynocardiomegaly_label_class = [0]
+unhealthynocardiomegaly_label_class = [1]
 
 batch_size = 8
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
-num_epoch = 50
+num_epoch = 100
 
 def get_same_indices(target, labels):
     label_indices = []
@@ -36,7 +39,7 @@ def get_dataloaders():
     # transform_validation = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     # transform_test = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
 
-    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data/train2'
+    train_test_dir = '/vol/bitbucket/jyk416/OneClassDenseNet/data/train3'
     # traindir = '/home/yoon/jyk416/OneClassDenseNet/data'
     # testdir = '/home/yoon/jyk416/OneClassDenseNet/data'
 
@@ -60,20 +63,34 @@ def get_dataloaders():
     # split_female = int(np.floor(validation_ratio * num_female_train))
     # split_male = int(np.floor(validation_ratio * num_male_train))
 
-    ap_count = 0
-    pa_count = 0
+    # ap_count = 0
+    # pa_count = 0
+    # for i in range(len(dataset.targets)):
+    #     if dataset.targets[i] == 0:
+    #         ap_count += 1
+    #     else:
+    #         pa_count += 1
+    #
+    # num_ap_train = ap_count
+    # num_pa_train = pa_count
+    # ap_indices = get_same_indices(dataset.targets, ap_label_class)
+    # pa_indices = get_same_indices(dataset.targets, pa_label_class)
+    # split_ap = int(np.floor(validation_ratio * num_ap_train))
+    # split_pa = int(np.floor(validation_ratio * num_pa_train))
+
+    healthynocardiomegaly_count = 0
+    unhealthynocardiomegaly_count = 0
     for i in range(len(dataset.targets)):
         if dataset.targets[i] == 0:
-            ap_count += 1
+            healthynocardiomegaly_count += 1
         else:
-            pa_count += 1
-
-    num_ap_train = ap_count
-    num_pa_train = pa_count
-    ap_indices = get_same_indices(dataset.targets, ap_label_class)
-    pa_indices = get_same_indices(dataset.targets, pa_label_class)
-    split_ap = int(np.floor(validation_ratio * num_ap_train))
-    split_pa = int(np.floor(validation_ratio * num_pa_train))
+            unhealthynocardiomegaly_count += 1
+    num_healthynocardiomegaly_train = healthynocardiomegaly_count
+    num_unhealthynocardiomegaly_train = unhealthynocardiomegaly_count
+    healthynocardiomegaly_indices = get_same_indices(dataset.targets, healthynocardiomegaly_label_class)
+    unhealthynocardiomegaly_indices = get_same_indices(dataset.targets, unhealthynocardiomegaly_label_class)
+    split_healthynocardiomegaly = int(np.floor(validation_ratio * num_healthynocardiomegaly_train))
+    split_unhealthynocardiomegaly = int(np.floor(validation_ratio * num_unhealthynocardiomegaly_train))
 
     # num_train = len(dataset)
     # indices = get_same_indices(dataset.targets, female_label_class)
@@ -84,10 +101,15 @@ def get_dataloaders():
     # train_set = female_train_idx + male_train_idx
     # valid_set = female_valid_idx + male_valid_idx
 
-    ap_train_idx, ap_valid_idx = ap_indices[split_ap:], ap_indices[:split_ap]
-    pa_train_idx, pa_valid_idx = pa_indices[split_pa:], pa_indices[:split_pa]
-    train_set = ap_train_idx + pa_train_idx
-    valid_set = ap_valid_idx + pa_valid_idx
+    # ap_train_idx, ap_valid_idx = ap_indices[split_ap:], ap_indices[:split_ap]
+    # pa_train_idx, pa_valid_idx = pa_indices[split_pa:], pa_indices[:split_pa]
+    # train_set = ap_train_idx + pa_train_idx
+    # valid_set = ap_valid_idx + pa_valid_idx
+
+    healthynocardiomegaly_train_idx, healthynocardiomegaly_valid_idx = healthynocardiomegaly_indices[split_healthynocardiomegaly:], healthynocardiomegaly_indices[:split_healthynocardiomegaly]
+    unhealthynocardiomegaly_train_idx, unhealthynocardiomegaly_valid_idx = unhealthynocardiomegaly_indices[split_unhealthynocardiomegaly:], unhealthynocardiomegaly_indices[:split_unhealthynocardiomegaly]
+    train_set = healthynocardiomegaly_train_idx + unhealthynocardiomegaly_train_idx
+    valid_set = healthynocardiomegaly_valid_idx + unhealthynocardiomegaly_valid_idx
 
     # train_idx, valid_idx = indices[split:], indices[:split]
     train_sampler = SubsetRandomSampler(train_set)
@@ -137,7 +159,7 @@ def train():
                                                   milestones=[int(num_epoch * 0.5), int(num_epoch * 0.75)], gamma=0.1,
                                                   last_epoch=-1)
     best_accuracy = 0
-    resume_weights = "/home/yoon/jyk416/OneClassDenseNet/output2/checkpoint.pth.tar"
+    resume_weights = "/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar"
     start_epoch = 0
 
     if os.path.exists(resume_weights):
@@ -154,7 +176,7 @@ def train():
         model.load_state_dict(checkpoint['state_dict'])
         print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
 
-    model_filename = '/home/yoon/jyk416/OneClassDenseNet/output2/model{}.pth'
+    model_filename = '/vol/bitbucket/jyk416/OneClassDenseNet/models/model{}.pth'
     # training loop + validation loop
     for epoch in range(num_epoch):
         lr_scheduler.step()
