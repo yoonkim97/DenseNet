@@ -122,7 +122,7 @@ def get_dataloaders():
     train_loader = torch.utils.data.DataLoader(
         dataset, batch_size=batch_size, sampler=train_sampler, num_workers=0
     )
-
+    print("train_loader", len(train_loader))
     valid_loader = torch.utils.data.DataLoader(
         dataset, batch_size=batch_size, sampler=valid_sampler, num_workers=0
     )
