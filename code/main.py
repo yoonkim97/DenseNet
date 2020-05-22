@@ -110,6 +110,7 @@ def get_dataloaders():
     unhealthynocardiomegaly_train_idx, unhealthynocardiomegaly_valid_idx = unhealthynocardiomegaly_indices[split_unhealthynocardiomegaly:], unhealthynocardiomegaly_indices[:split_unhealthynocardiomegaly]
     train_set = healthynocardiomegaly_train_idx + unhealthynocardiomegaly_train_idx
     valid_set = healthynocardiomegaly_valid_idx + unhealthynocardiomegaly_valid_idx
+    print("TRAIN SET", len(train_set))
 
     # train_idx, valid_idx = indices[split:], indices[:split]
     train_sampler = SubsetRandomSampler(train_set)
