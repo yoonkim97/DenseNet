@@ -22,7 +22,7 @@ batch_size = 8
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
-num_epoch = 100
+num_epoch = 50
 
 def get_same_indices(target, labels):
     label_indices = []
@@ -39,7 +39,7 @@ def get_dataloaders():
     # transform_validation = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     # transform_test = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
 
-    train_test_dir = '/vol/bitbucket/jyk416/OneClassDenseNet/data/train3'
+    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data/train3'
     # traindir = '/home/yoon/jyk416/OneClassDenseNet/data'
     # testdir = '/home/yoon/jyk416/OneClassDenseNet/data'
 
@@ -136,7 +136,7 @@ def get_dataloaders():
 def DenseNetBC_50_12():
     return DenseNet3(depth=50, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
-def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet/output2/checkpoint.pth.tar'):
+def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar'):
     """Save checkpoint if a new best is achieved"""
     if is_best:
         print("=> Saving a new best")
@@ -145,7 +145,7 @@ def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet
         print("=> Validation Accuracy did not improve")
 
 def train():
-    directory = '/home/yoon/jyk416/OneClassDenseNet/output2/'
+    directory = '/home/yoon/jyk416/OneClassDenseNet/checkpoints/'
     train_loader, valid_loader = get_dataloaders()
 
     start_ts = time.time()
@@ -159,7 +159,7 @@ def train():
                                                   milestones=[int(num_epoch * 0.5), int(num_epoch * 0.75)], gamma=0.1,
                                                   last_epoch=-1)
     best_accuracy = 0
-    resume_weights = "/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar"
+    resume_weights = "/home/yoon/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar"
     start_epoch = 0
 
     if os.path.exists(resume_weights):
@@ -176,7 +176,7 @@ def train():
         model.load_state_dict(checkpoint['state_dict'])
         print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
 
-    model_filename = '/vol/bitbucket/jyk416/OneClassDenseNet/models/model{}.pth'
+    model_filename = '/home/yoon/jyk416/OneClassDenseNet/models/model{}.pth'
     # training loop + validation loop
     for epoch in range(num_epoch):
         lr_scheduler.step()
