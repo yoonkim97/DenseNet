@@ -110,7 +110,6 @@ def get_dataloaders():
     unhealthynocardiomegaly_train_idx, unhealthynocardiomegaly_valid_idx = unhealthynocardiomegaly_indices[split_unhealthynocardiomegaly:], unhealthynocardiomegaly_indices[:split_unhealthynocardiomegaly]
     train_set = healthynocardiomegaly_train_idx + unhealthynocardiomegaly_train_idx
     valid_set = healthynocardiomegaly_valid_idx + unhealthynocardiomegaly_valid_idx
-    print("TRAIN SET", len(train_set))
 
     # train_idx, valid_idx = indices[split:], indices[:split]
     train_sampler = SubsetRandomSampler(train_set)
@@ -122,7 +121,6 @@ def get_dataloaders():
     train_loader = torch.utils.data.DataLoader(
         dataset, batch_size=batch_size, sampler=train_sampler, num_workers=0
     )
-    print("train_loader", len(train_loader))
     valid_loader = torch.utils.data.DataLoader(
         dataset, batch_size=batch_size, sampler=valid_sampler, num_workers=0
     )
@@ -193,9 +191,8 @@ def train():
             loss.backward()
             optimizer.step()
             total_loss += loss.item()
-            print(len(train_loader))
             show_period = 100
-            print('[%d, %d/50500] loss: %.7f' % (start_epoch + epoch + 1, (i + 1) * batch_size, total_loss / show_period))
+            print('[%d, %d/76336] loss: %.7f' % (start_epoch + epoch + 1, (i + 1) * batch_size, total_loss / show_period))
             total_loss = 0.0
         torch.cuda.empty_cache()
 
