@@ -192,7 +192,7 @@ def train():
             loss.backward()
             optimizer.step()
             total_loss += loss.item()
-
+            print(len(train_loader))
             show_period = 100
             print('[%d, %d/50500] loss: %.7f' % (start_epoch + epoch + 1, (i + 1) * batch_size, total_loss / show_period))
             total_loss = 0.0
