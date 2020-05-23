@@ -145,6 +145,10 @@ def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet
 
 def train():
     directory = '/home/yoon/jyk416/OneClassDenseNet/checkpoints/'
+    model_directory = '/home/yoon/jyl416/OneClassDenseNet/models/'
+    if not os.path.exists(model_directory):
+        os.makedirs(model_directory)
+
     train_loader, valid_loader = get_dataloaders()
 
     start_ts = time.time()
