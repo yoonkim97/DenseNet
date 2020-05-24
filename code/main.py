@@ -151,6 +151,7 @@ def train():
         os.makedirs(model_directory)
 
     train_loader, valid_loader = get_dataloaders()
+    print("got dataloaders")
 
     start_ts = time.time()
     print(torch.cuda.is_available())
