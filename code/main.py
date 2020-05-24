@@ -18,7 +18,7 @@ from torch import optim
 healthynocardiomegaly_label_class = [0]
 unhealthynocardiomegaly_label_class = [1]
 
-batch_size = 8
+batch_size = 2
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
