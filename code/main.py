@@ -144,6 +144,7 @@ def save_checkpoint(state, is_best, filename='/vol/bitbucket/jyk416/OneClassDens
         print("=> Validation Accuracy did not improve")
 
 def train():
+    print("started_train")
     directory = '/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints/'
     model_directory = '/vol/bitbucket/jyk416/OneClassDenseNet/models/'
     if not os.path.exists(model_directory):
