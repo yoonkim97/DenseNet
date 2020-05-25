@@ -18,7 +18,7 @@ from torch import optim
 healthynocardiomegaly_label_class = [0]
 unhealthynocardiomegaly_label_class = [1]
 
-batch_size = 8
+batch_size = 16
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
@@ -135,7 +135,7 @@ def get_dataloaders():
 def DenseNetBC_50_12():
     return DenseNet3(depth=50, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
-def save_checkpoint(state, is_best, filename='/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints_4_25/checkpoint.pth.tar'):
+def save_checkpoint(state, is_best, filename='/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints_8_50_256/checkpoint.pth.tar'):
     """Save checkpoint if a new best is achieved"""
     if is_best:
         print("=> Saving a new best")
