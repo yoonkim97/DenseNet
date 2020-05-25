@@ -18,7 +18,7 @@ from torch import optim
 healthynocardiomegaly_label_class = [0]
 unhealthynocardiomegaly_label_class = [1]
 
-batch_size = 8
+batch_size = 2
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
@@ -135,7 +135,7 @@ def get_dataloaders():
 def DenseNetBC_50_12():
     return DenseNet3(depth=50, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
-def save_checkpoint(state, is_best, filename='/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints_8_50_256/checkpoint.pth.tar'):
+def save_checkpoint(state, is_best, filename='/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints_2_50_256/checkpoint.pth.tar'):
     """Save checkpoint if a new best is achieved"""
     if is_best:
         print("=> Saving a new best")
@@ -145,8 +145,8 @@ def save_checkpoint(state, is_best, filename='/vol/bitbucket/jyk416/OneClassDens
 
 def train():
     print("started_train")
-    directory = '/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints_8_50_256/'
-    model_directory = '/vol/bitbucket/jyk416/OneClassDenseNet/models_8_50_256/'
+    directory = '/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints_2_50_256/'
+    model_directory = '/vol/bitbucket/jyk416/OneClassDenseNet/models_2_50_256/'
     if not os.path.exists(model_directory):
         os.makedirs(model_directory)
 
@@ -164,7 +164,7 @@ def train():
                                                   milestones=[int(num_epoch * 0.5), int(num_epoch * 0.75)], gamma=0.1,
                                                   last_epoch=-1)
     best_accuracy = 0
-    resume_weights = "/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints_8_50_256/checkpoint.pth.tar"
+    resume_weights = "/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints_2_50_256/checkpoint.pth.tar"
     start_epoch = 0
 
     if os.path.exists(resume_weights):
@@ -181,7 +181,7 @@ def train():
         model.load_state_dict(checkpoint['state_dict'])
         print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
 
-    model_filename = '/vol/bitbucket/jyk416/OneClassDenseNet/models_8_50_256/model{}.pth'
+    model_filename = '/vol/bitbucket/jyk416/OneClassDenseNet/models_2_50_256/model{}.pth'
     # training loop + validation loop
     for epoch in range(num_epoch):
         lr_scheduler.step()
