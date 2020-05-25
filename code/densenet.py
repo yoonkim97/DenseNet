@@ -114,5 +114,6 @@ class DenseNet3(nn.Module):
         out = self.block3(out)
         out = self.relu(self.bn1(out))
         out = F.avg_pool2d(out, 8)
+        print(out.size)
         out = out.view(-1, 153 * 16 * 16)
         return self.fc(out)
