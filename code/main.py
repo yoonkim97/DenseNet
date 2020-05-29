@@ -22,7 +22,7 @@ batch_size = 2
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
-num_epoch = 50
+num_epoch = 100
 
 def get_same_indices(target, labels):
     label_indices = []
@@ -157,6 +157,7 @@ def train():
     print(torch.cuda.is_available())
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = DenseNetBC_50_12().to(device)
+    model.load_state_dict(torch.load("../models_2_25/model46.pth"))
 
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=initial_lr, momentum=0.9)
@@ -232,7 +233,7 @@ def train():
                     'best_accuracy': best_accuracy
                 }, is_best)
         if epoch % 5 == 0:
-            torch.save(model.state_dict(), model_filename.format(epoch + 1))
+            torch.save(model.state_dict(), model_filename.format(epoch + 46 + 1))
     torch.cuda.empty_cache()
     print('Finished Training')
 
