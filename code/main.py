@@ -168,19 +168,19 @@ def train():
     resume_weights = "/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints_2_25/checkpoint.pth.tar"
     start_epoch = 0
 
-    if os.path.exists(resume_weights):
-        # cuda = torch.cuda.is_available()
-        if torch.cuda.is_available():
-            checkpoint = torch.load(resume_weights)
-        else:
-            # Load GPU model on CPU
-            checkpoint = torch.load(resume_weights,
-                                    map_location=lambda storage,
-                                                        loc: storage)
-        start_epoch = checkpoint['epoch']
-        best_accuracy = checkpoint['best_accuracy']
-        model.load_state_dict(checkpoint['state_dict'])
-        print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
+    # if os.path.exists(resume_weights):
+    #     # cuda = torch.cuda.is_available()
+    #     if torch.cuda.is_available():
+    #         checkpoint = torch.load(resume_weights)
+    #     else:
+    #         # Load GPU model on CPU
+    #         checkpoint = torch.load(resume_weights,
+    #                                 map_location=lambda storage,
+    #                                                     loc: storage)
+    #     start_epoch = checkpoint['epoch']
+    #     best_accuracy = checkpoint['best_accuracy']
+    #     model.load_state_dict(checkpoint['state_dict'])
+    #     print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
 
     model_filename = '/vol/bitbucket/jyk416/OneClassDenseNet/models_2_25/model{}.pth'
     # training loop + validation loop
