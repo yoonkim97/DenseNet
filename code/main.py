@@ -233,7 +233,7 @@ def train():
                     'best_accuracy': best_accuracy
                 }, is_best)
         if epoch % 5 == 0:
-            torch.save(model.state_dict(), model_filename.format(epoch + 46 + 1))
+            torch.save(model.state_dict(), model_filename.format(epoch + 67 + 1))
     torch.cuda.empty_cache()
     print('Finished Training')
 
