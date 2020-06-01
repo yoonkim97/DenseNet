@@ -39,7 +39,7 @@ def get_dataloaders():
     # transform_validation = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     # transform_test = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
 
-    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data/train3'
+    train_test_dir = '/vol/bitbucket/jyk416/OneClassDenseNet/data/train3'
     # traindir = '/home/yoon/jyk416/OneClassDenseNet/data'
     # testdir = '/home/yoon/jyk416/OneClassDenseNet/data'
 
@@ -135,7 +135,7 @@ def get_dataloaders():
 def DenseNetBC_50_12():
     return DenseNet3(depth=50, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
-def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar'):
+def save_checkpoint(state, is_best, filename='/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar'):
     """Save checkpoint if a new best is achieved"""
     if is_best:
         print("=> Saving a new best")
