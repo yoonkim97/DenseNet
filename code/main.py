@@ -18,7 +18,7 @@ from torch import optim
 healthynocardiomegaly_label_class = [0]
 unhealthynocardiomegaly_label_class = [1]
 
-batch_size = 2
+batch_size = 8
 validation_ratio = 0.1
 random_seed = 10
 initial_lr = 0.1
@@ -39,7 +39,7 @@ def get_dataloaders():
     # transform_validation = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     # transform_test = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
 
-    train_test_dir = '/vol/bitbucket/jyk416/OneClassDenseNet/data/train3'
+    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data/train3'
     # traindir = '/home/yoon/jyk416/OneClassDenseNet/data'
     # testdir = '/home/yoon/jyk416/OneClassDenseNet/data'
 
@@ -145,8 +145,8 @@ def save_checkpoint(state, is_best, filename='/vol/bitbucket/jyk416/OneClassDens
 
 def train():
     print("started_train")
-    directory = '/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints/'
-    model_directory = '/vol/bitbucket/jyk416/OneClassDenseNet/models/'
+    directory = '/home/yoon/jyk416/OneClassDenseNet/checkpoints/'
+    model_directory = '/home/yoon/jyk416/OneClassDenseNet/models/'
     if not os.path.exists(model_directory):
         os.makedirs(model_directory)
 
@@ -157,7 +157,7 @@ def train():
     print(torch.cuda.is_available())
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = DenseNetBC_50_12().to(device)
-    model.load_state_dict(torch.load("/vol/bitbucket/jyk416/OneClassDenseNet/models/model27.pth"))
+    model.load_state_dict(torch.load("/home/yoon/jyk416/OneClassDenseNet/models/model82.pth"))
 
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=initial_lr, momentum=0.9)
@@ -165,7 +165,7 @@ def train():
                                                   milestones=[int(num_epoch * 0.5), int(num_epoch * 0.75)], gamma=0.1,
                                                   last_epoch=-1)
     best_accuracy = 0
-    resume_weights = "/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar"
+    resume_weights = "/home/yoon/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar"
     start_epoch = 0
 
     # if os.path.exists(resume_weights):
@@ -182,7 +182,7 @@ def train():
     #     model.load_state_dict(checkpoint['state_dict'])
     #     print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
 
-    model_filename = '/vol/bitbucket/jyk416/OneClassDenseNet/models/model{}.pth'
+    model_filename = '/home/yoon/jyk416/OneClassDenseNet/models/model{}.pth'
     # training loop + validation loop
     for epoch in range(num_epoch):
         lr_scheduler.step()
@@ -199,7 +199,7 @@ def train():
             optimizer.step()
             total_loss += loss.item()
             show_period = 100
-            print('[%d, %d/76336] loss: %.7f' % (start_epoch + epoch + 1, (i + 1) * batch_size, total_loss / show_period))
+            print('[%d, %d/84817] loss: %.7f' % (start_epoch + epoch + 1, (i + 1) * batch_size, total_loss / show_period))
             total_loss = 0.0
         torch.cuda.empty_cache()
 
@@ -233,7 +233,7 @@ def train():
                     'best_accuracy': best_accuracy
                 }, is_best)
         if epoch % 5 == 0:
-            torch.save(model.state_dict(), model_filename.format(epoch + 27 + 1))
+            torch.save(model.state_dict(), model_filename.format(epoch + 82 + 1))
     torch.cuda.empty_cache()
     print('Finished Training')
 
