@@ -135,7 +135,7 @@ def get_dataloaders():
 def DenseNetBC_50_12():
     return DenseNet3(depth=50, num_classes=2, growth_rate=12, reduction=0.5, bottleneck=True, dropRate=0.2)
 
-def save_checkpoint(state, is_best, filename='/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar'):
+def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar'):
     """Save checkpoint if a new best is achieved"""
     if is_best:
         print("=> Saving a new best")
