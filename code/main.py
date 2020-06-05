@@ -157,7 +157,7 @@ def train():
     print(torch.cuda.is_available())
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = DenseNetBC_50_12().to(device)
-    model.load_state_dict(torch.load("/home/yoon/jyk416/OneClassDenseNet/models/model88.pth"))
+    model.load_state_dict(torch.load("/home/yoon/jyk416/OneClassDenseNet/models/model83.pth"))
 
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=initial_lr, momentum=0.9)
@@ -233,7 +233,7 @@ def train():
                     'best_accuracy': best_accuracy
                 }, is_best)
         if epoch % 5 == 0:
-            torch.save(model.state_dict(), model_filename.format(epoch + 88 + 1))
+            torch.save(model.state_dict(), model_filename.format(epoch + 83 + 1))
     torch.cuda.empty_cache()
     print('Finished Training')
 
