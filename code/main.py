@@ -39,7 +39,7 @@ def get_dataloaders():
     # transform_validation = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
     # transform_test = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
 
-    train_test_dir = '/home/yoon/jyk416/OneClassDenseNet/data/train3'
+    train_test_dir = '/vol/bitbucket/jyk416/OneClassDenseNet/data/train3'
     # traindir = '/home/yoon/jyk416/OneClassDenseNet/data'
     # testdir = '/home/yoon/jyk416/OneClassDenseNet/data'
 
@@ -145,8 +145,8 @@ def save_checkpoint(state, is_best, filename='/home/yoon/jyk416/OneClassDenseNet
 
 def train():
     print("started_train")
-    directory = '/home/yoon/jyk416/OneClassDenseNet/checkpoints/'
-    model_directory = '/home/yoon/jyk416/OneClassDenseNet/models/'
+    directory = '/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints/'
+    model_directory = '/vol/bitbucket/jyk416/OneClassDenseNet/models/'
     if not os.path.exists(model_directory):
         os.makedirs(model_directory)
 
@@ -157,7 +157,7 @@ def train():
     print(torch.cuda.is_available())
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = DenseNetBC_50_12().to(device)
-    model.load_state_dict(torch.load("/home/yoon/jyk416/OneClassDenseNet/models/model104.pth"))
+    model.load_state_dict(torch.load("/vol/bitbucket/jyk416/OneClassDenseNet/models/model104.pth"))
 
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=initial_lr, momentum=0.9)
@@ -165,7 +165,7 @@ def train():
                                                   milestones=[int(num_epoch * 0.5), int(num_epoch * 0.75)], gamma=0.1,
                                                   last_epoch=-1)
     best_accuracy = 0
-    resume_weights = "/home/yoon/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar"
+    resume_weights = "/vol/bitbucket/jyk416/OneClassDenseNet/checkpoints/checkpoint.pth.tar"
     start_epoch = 0
 
     correct = 0
@@ -197,7 +197,7 @@ def train():
     #     model.load_state_dict(checkpoint['state_dict'])
     #     print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
 
-    model_filename = '/home/yoon/jyk416/OneClassDenseNet/models/model{}.pth'
+    model_filename = '/vol/bitbucket/jyk416/OneClassDenseNet/models/model{}.pth'
     # training loop + validation loop
     # for epoch in range(num_epoch):
     #     lr_scheduler.step()
