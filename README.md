@@ -1,1 +1,1 @@
-# One-Class-Dense-Net
+# Dense-Net
