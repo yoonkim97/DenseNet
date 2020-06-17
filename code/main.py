@@ -214,7 +214,7 @@ def train():
             optimizer.step()
             total_loss += loss.item()
             show_period = 100
-            print('[%d, %d/84817] loss: %.7f' % (start_epoch + epoch + 1, (i + 1) * batch_size, total_loss / show_period))
+            print('[%d, %d/50500] loss: %.7f' % (start_epoch + epoch + 1, (i + 1) * batch_size, total_loss / show_period))
             total_loss = 0.0
         torch.cuda.empty_cache()
 
