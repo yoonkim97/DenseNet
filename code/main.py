@@ -168,21 +168,21 @@ def train():
     resume_weights = "/home/yoon/jyk416/OneClassDenseNet/checkpoints_healthy/checkpoint.pth.tar"
     start_epoch = 0
 
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        model.eval()
-        for i, data in enumerate(valid_loader, 0):
-            inputs, labels = data
-            inputs, labels = inputs.to(device), labels.to(device)
-            outputs = model(inputs)
-
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-
-            accuracy = 100 * correct / total
-            print('Accuracy of the network on the validation images:', accuracy)
+    # correct = 0
+    # total = 0
+    # with torch.no_grad():
+    #     model.eval()
+    #     for i, data in enumerate(valid_loader, 0):
+    #         inputs, labels = data
+    #         inputs, labels = inputs.to(device), labels.to(device)
+    #         outputs = model(inputs)
+    #
+    #         _, predicted = torch.max(outputs.data, 1)
+    #         total += labels.size(0)
+    #         correct += (predicted == labels).sum().item()
+    #
+    #         accuracy = 100 * correct / total
+    #         print('Accuracy of the network on the validation images:', accuracy)
     # if os.path.exists(resume_weights):
     #     # cuda = torch.cuda.is_available()
     #     if torch.cuda.is_available():
