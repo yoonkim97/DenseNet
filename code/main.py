@@ -183,21 +183,21 @@ def train():
     #
     #         accuracy = 100 * correct / total
     #         print('Accuracy of the network on the validation images:', accuracy)
-    # if os.path.exists(resume_weights):
-    #     # cuda = torch.cuda.is_available()
-    #     if torch.cuda.is_available():
-    #         checkpoint = torch.load(resume_weights)
-    #     else:
-    #         # Load GPU model on CPU
-    #         checkpoint = torch.load(resume_weights,
-    #                                 map_location=lambda storage,
-    #                                                     loc: storage)
-    #     start_epoch = checkpoint['epoch']
-    #     best_accuracy = checkpoint['best_accuracy']
-    #     model.load_state_dict(checkpoint['state_dict'])
-    #     print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
+    if os.path.exists(resume_weights):
+        # cuda = torch.cuda.is_available()
+        if torch.cuda.is_available():
+            checkpoint = torch.load(resume_weights)
+        else:
+            # Load GPU model on CPU
+            checkpoint = torch.load(resume_weights,
+                                    map_location=lambda storage,
+                                                        loc: storage)
+        start_epoch = checkpoint['epoch']
+        best_accuracy = checkpoint['best_accuracy']
+        model.load_state_dict(checkpoint['state_dict'])
+        print("=> loaded checkpoint '{}' (trained for {} epochs)".format(resume_weights, checkpoint['epoch']))
 
-    model_filename = '/home/yoon/jyk416/OneClassDenseNet/healthy_models/model{}.pth'
+    model_filename = '/home/yoon/jyk416/OneClassDenseNet/healthy_models/model_resume{}.pth'
     # training loop + validation loop
     for epoch in range(num_epoch):
         lr_scheduler.step()
